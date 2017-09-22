@@ -1,0 +1,5 @@
+Django==1.11
+djangorestframework==3.3.0
+django-cors-headers>=1.1.0
+django-oauth-toolkit
+oauth2_provider

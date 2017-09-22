@@ -20,12 +20,15 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '@h=)zpsx7f#opl%ih0w$@l4^!ky^ppt3($0rl3y*r*2*^uoc=p'
+SECRET_KEY = 'ffh7@tpb--di!q91j6tcw3+1fm6l7wxs*7#%m)ge1gdqv*!(!z'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "13.126.173.87",
+    "127.0.0.1"
+]
 
 
 # Application definition
@@ -37,11 +40,34 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'chat_app',
+    'oauth2_provider',
+    'corsheaders',
+    'rest_framework',
 ]
+
+CORS_ORIGIN_ALLOW_ALL = True
+
+CORS_ORIGIN_WHITELIST = (
+    '127.0.0.1',
+)
+
+CORS_ALLOW_HEADERS = (
+    'x-requested-with',
+    'content-type',
+    'accept',
+    'origin',
+    'authorization',
+    'x-csrftoken',
+    'x-api-key',
+    'x-source',
+    'source'
+)
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -105,16 +131,47 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Kolkata'
 
 USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+# ************************* Django Rest Framework ******************************
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.AllowAny',
+    ),
+    'DEFAULT_PARSER_CLASSES': (
+        'rest_framework.parsers.FormParser',
+        'rest_framework.parsers.JSONParser',
+        'rest_framework.parsers.MultiPartParser',
+        'rest_framework.parsers.FileUploadParser',
+    ),
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+        'rest_framework.renderers.AdminRenderer',
+    )
+}
+
+OAUTH2_PROVIDER = {
+    # this is the list of available scopes
+    'SCOPES': {'read': 'Read users', 'write': 'Write users', 'update': 'Update users', 'delete': 'Delete users'}
+}
