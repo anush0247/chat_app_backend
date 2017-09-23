@@ -13,7 +13,7 @@ def http_response(code, message):
         "message": message
     }
     from django.http import HttpResponse
-    return HttpResponse(status=code, content=json.dumps(content), default=datetime_handler)
+    return HttpResponse(status=code, content=json.dumps(content, default=datetime_handler))
 
 
 def json_response(response_dict):

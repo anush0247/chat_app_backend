@@ -14,7 +14,12 @@ class ChannelMessage(AbstractDateTimeModel):
 
     @classmethod
     def get_channel_message(cls, channel_id):
-        return list(cls.objects.filter(channel_id=channel_id).order_by("-creation_datetime").values())
+        Channel.get_channel_obj(channel_id)
+        messages = list(cls.objects.filter(channel_id=channel_id).order_by("-creation_datetime").values())
+        for each_message in messages:
+            each_message["message_id"] = each_message["id"]
+        return messages
+
 
     @classmethod
     def add_channel_message(cls, user_id, message, channel_id):

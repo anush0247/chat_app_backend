@@ -19,7 +19,7 @@ class Channel(AbstractDateTimeModel):
     @classmethod
     def join_channel(cls, channel_id, user_id):
         cls.get_channel_obj(channel_id)
-        from chat_app.models.channel_member import ChannelMember
+        from .channel_member import ChannelMember
         ChannelMember.join_member(user_id, channel_id)
 
         from chat_app.utils.response_utils import http_response
@@ -36,7 +36,10 @@ class Channel(AbstractDateTimeModel):
 
     @classmethod
     def list_public_channels(cls):
-        return list(cls.objects.filter(is_public=True).values())
+        channels = list(cls.objects.filter(is_public=True).values())
+        for each_channel in channels:
+            each_channel["channel_id"] = each_channel["id"]
+        return channels
 
     @classmethod
     def get_channel_obj(cls, channel_id):
@@ -90,8 +93,9 @@ class Channel(AbstractDateTimeModel):
         for each_member_id in member_ids:
             members.append(users_dict[each_member_id])
 
-        is_member = user_id in users_dict.keys()
+        is_member = True if user_id in member_ids else False
         channel_dict = {
+            "channel_id": channel_obj.id,
             "name": channel_obj.name,
             "is_public": channel_obj.is_public,
             "created_by": channel_obj.created_by,

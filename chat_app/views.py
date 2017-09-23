@@ -20,3 +20,33 @@ def list_public_channels(request):
     from chat_app.models import Channel
     from chat_app.utils.response_utils import json_response
     return json_response(Channel.list_public_channels())
+
+
+@api_view(['GET'])
+@permission_classes([permissions.IsAuthenticated])
+@protected_resource(scopes=['read'])
+def get_channel(request, channel_id):
+    user_id = request.user.id
+    from chat_app.models import Channel
+    from chat_app.utils.response_utils import json_response
+    return json_response(Channel.get_channel(channel_id, user_id))
+
+
+@api_view(['GET'])
+@permission_classes([permissions.IsAuthenticated])
+@protected_resource(scopes=['read'])
+def get_channel_messages(request, channel_id):
+    user_id = request.user.id
+    from chat_app.models import ChannelMessage
+    from chat_app.utils.response_utils import json_response
+    return json_response(ChannelMessage.get_channel_message(channel_id))
+
+
+@api_view(['GET'])
+@permission_classes([permissions.IsAuthenticated])
+@protected_resource(scopes=['read'])
+def join_channel(request, channel_id):
+    user_id = request.user.id
+    from chat_app.models import Channel
+    from chat_app.utils.response_utils import json_response
+    return json_response(Channel.join_channel(channel_id, user_id))
