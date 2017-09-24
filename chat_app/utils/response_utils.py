@@ -9,11 +9,12 @@ def datetime_handler(x):
 
 
 def http_response(code, message):
-    content = {
+    response_dict = {
         "message": message
     }
+    print response_dict
     from django.http import HttpResponse
-    return HttpResponse(status=code, content=json.dumps(content, default=datetime_handler))
+    return HttpResponse(status=code, content=json.dumps(response_dict, default=datetime_handler))
 
 
 def json_response(response_dict):

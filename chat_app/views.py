@@ -17,9 +17,10 @@ def user_profile(request):
 @permission_classes([permissions.IsAuthenticated])
 @protected_resource(scopes=['read'])
 def list_public_channels(request):
+    user_id = request.user.id
     from chat_app.models import Channel
     from chat_app.utils.response_utils import json_response
-    return json_response(Channel.list_public_channels())
+    return json_response(Channel.list_public_channels(user_id))
 
 
 @api_view(['GET'])
@@ -47,6 +48,6 @@ def get_channel_messages(request, channel_id):
 @protected_resource(scopes=['read'])
 def join_channel(request, channel_id):
     user_id = request.user.id
-    from chat_app.models import Channel
-    from chat_app.utils.response_utils import json_response
-    return json_response(Channel.join_channel(channel_id, user_id))
+    from chat_app.models import ChannelMember, Channel
+    Channel.get_channel_obj(channel_id)
+    return ChannelMember.join_member(user_id, channel_id)

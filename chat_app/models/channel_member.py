@@ -20,17 +20,23 @@ class ChannelMember(AbstractDateTimeModel):
 
     @classmethod
     def join_member(cls, user_id, channel_id):
+        from chat_app.utils.response_utils import http_response
         from django.db import IntegrityError
         try:
             cls.objects.create(channel_id=channel_id, user_id=user_id)
+            return http_response(200, "Successfully Joined")
         except IntegrityError:
-            from chat_app.utils.response_utils import http_response
             return http_response(400, "Already member in channel")
 
     @classmethod
+    def member_channels(cls, user_id):
+        return list(cls.objects.filter(user_id=user_id).values_list('channel_id', flat=True))
+
+    @classmethod
     def remove_member(cls, user_id, channel_id):
+        from chat_app.utils.response_utils import http_response
         try:
             cls.objects.get(channel_id=channel_id, user_id=user_id).delete()
+            return http_response(200, "Successfully Left")
         except cls.DoesNotExist:
-            from chat_app.utils.response_utils import http_response
             return http_response(404, "Member not found")

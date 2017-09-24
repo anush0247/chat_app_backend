@@ -17,28 +17,13 @@ class Channel(AbstractDateTimeModel):
         return channel
 
     @classmethod
-    def join_channel(cls, channel_id, user_id):
-        cls.get_channel_obj(channel_id)
-        from .channel_member import ChannelMember
-        ChannelMember.join_member(user_id, channel_id)
-
-        from chat_app.utils.response_utils import http_response
-        return http_response(200, "Successfully Joined")
-
-    @classmethod
-    def leave_channel(cls, channel_id, user_id):
-        cls.get_channel_obj(channel_id)
-        from chat_app.models.channel_member import ChannelMember
-        ChannelMember.remove_member(user_id, channel_id)
-
-        from chat_app.utils.response_utils import http_response
-        return http_response(200, "Successfully Left")
-
-    @classmethod
-    def list_public_channels(cls):
+    def list_public_channels(cls, user_id):
         channels = list(cls.objects.filter(is_public=True).values())
+        from chat_app.models import ChannelMember
+        member_channels_list = ChannelMember.member_channels(user_id)
         for each_channel in channels:
             each_channel["channel_id"] = each_channel["id"]
+            each_channel["is_member"] = True if each_channel["id"] in member_channels_list else False
         return channels
 
     @classmethod
@@ -91,7 +76,9 @@ class Channel(AbstractDateTimeModel):
 
         members = []
         for each_member_id in member_ids:
-            members.append(users_dict[each_member_id])
+            each_member = users_dict.get(each_member_id)
+            if each_member:
+                members.append(each_member)
 
         is_member = True if user_id in member_ids else False
         channel_dict = {
