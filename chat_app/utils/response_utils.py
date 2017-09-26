@@ -12,7 +12,6 @@ def http_response(code, message):
     response_dict = {
         "message": message
     }
-    print response_dict
     from django.http import HttpResponse
     return HttpResponse(status=code, content=json.dumps(response_dict, default=datetime_handler))
 

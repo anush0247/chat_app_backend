@@ -1,7 +1,8 @@
 def get_users_dict(user_ids):
     from django.contrib.auth import get_user_model
     user = get_user_model()
-    users = user.objects.filter(id__in=user_ids).values()
+    users = user.objects.filter(id__in=user_ids).values("username", "first_name", "last_name",
+                                                        "email", "id")
     users_dict = dict()
     for each_user in users:
         each_user["user_id"] = each_user['id']
